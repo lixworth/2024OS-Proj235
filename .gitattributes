@@ -1,0 +1,45 @@
+# Auto detect text files and perform LF normalization
+*        text=auto
+# Force the following filetypes to have unix eols, so Windows does not break them
+* text eol=lf
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+*.cs     text diff=csharp
+*.java   text diff=java
+*.html   text diff=html
+*.css    text
+*.js     text
+*.ts     text
+*.sql    text
+
+*.wasm   binary
+*.gif    binary
+*.jpg    binary
+*.jpeg    binary
+*.png    binary
+*.ico    binary
+*.icns   binary
+*.woff   binary
+*.woff2  binary
+*.webp   binary
+*.mp4    binary
+*.mp3    binary
+*.eot    binary
+*.ttf    binary
+*.jar    binary
+*.zip    binary
+*.so     binary
+*.dll    binary
+*.pdf    binary
+
+*.csproj text merge=union
+*.sln    text merge=union eol=crlf
+
+*.docx   diff=astextplain
+*.DOCX   diff=astextplain
+
+# absolute paths are ok, as are globs
+/**/postinst* text eol=lf
+
+# paths that don't start with / are treated relative to the .gitattributes folder
+relative/path/*.txt text eol=lf
