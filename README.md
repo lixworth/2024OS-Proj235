@@ -2,8 +2,6 @@
 
 > Proj2535: https://github.com/oscomp/proj235-linux-upgrade-system
 
-
-> https://github.com/lixworth/2024OS-Proj235
 > https://gitlab.eduxiji.net/T202413198993225/project2210132-239709
 
 ## 文件夹说明
