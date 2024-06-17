@@ -1,6 +1,6 @@
 <script setup>
 import GlobalComponent from "./components/GlobalComponent.vue";
-import { firstLoadingRef } from '@/store/first_loading';
+import { firstLoadingRef } from './store/first_loading';
 </script>
 
 <template>
