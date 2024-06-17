@@ -1,6 +1,0 @@
-# Ignore artifacts:
-build
-coverage
-*.js.map
-*.js
-dist

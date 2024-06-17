@@ -1,10 +1,12 @@
-<script setup>
+<script setup lang="ts">
 import { useDialog, useLoadingBar, useMessage } from 'naive-ui';
 import { onMounted } from 'vue';
-import { loadingBarApiRef } from '../store/loading';
+import { loadingBarApiRef } from '@/stores/loading';
 
 const loadingBar = useLoadingBar();
+// @ts-ignore
 window.$message = useMessage();
+// @ts-ignore
 window.$dialog = useDialog();
 
 onMounted(() => {
