@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import GlobalComponent from '@/components/GlobalComponent.vue'
+import GlobalComponent from '@/components/GlobalComponent.vue';
 </script>
 
 <template>
