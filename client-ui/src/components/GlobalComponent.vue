@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-  NConfigProvider,
-  NMessageProvider,
-  NLoadingBarProvider,
-  NDialogProvider
-} from 'naive-ui';
+import { NConfigProvider, NMessageProvider, NLoadingBarProvider, NDialogProvider } from 'naive-ui';
 import ComponentInit from './ComponentInit.vue';
 </script>
 <template>

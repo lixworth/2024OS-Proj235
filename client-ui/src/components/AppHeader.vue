@@ -45,11 +45,11 @@ onMounted(() => {});
   <n-layout-header bordered class="nav" position="static">
     <div class="drawer" v-if="isMobileRef">
       <n-popover
-          ref="mobilePopoverRef"
-          placement="bottom-end"
-          display-directive="show"
-          trigger="click"
-          style="padding: 0; min-width: 240px; z-index: 100"
+        ref="mobilePopoverRef"
+        placement="bottom-end"
+        display-directive="show"
+        trigger="click"
+        style="padding: 0; min-width: 240px; z-index: 100"
       >
         <template v-slot:trigger>
           <n-icon size="24" style="margin-top: 5px">
@@ -58,20 +58,20 @@ onMounted(() => {});
         </template>
         <div style="overflow: auto; max-height: 79vh">
           <n-menu
-              v-if="user_info.check()"
-              size="small"
-              v-bind:options="afterLoginMenu"
-              v-model:value="activeKey"
-              @update:value="handleUpdateMobileMenu"
-              default-expand-all
+            v-if="user_info.check()"
+            size="small"
+            v-bind:options="afterLoginMenu"
+            v-model:value="activeKey"
+            @update:value="handleUpdateMobileMenu"
+            default-expand-all
           />
           <n-menu
-              v-else
-              size="small"
-              v-bind:options="beforeLoginMenu"
-              v-model:value="activeKey"
-              @update:value="handleUpdateMobileMenu"
-              default-expand-all
+            v-else
+            size="small"
+            v-bind:options="beforeLoginMenu"
+            v-model:value="activeKey"
+            @update:value="handleUpdateMobileMenu"
+            default-expand-all
           ></n-menu>
         </div>
       </n-popover>
@@ -83,11 +83,11 @@ onMounted(() => {});
     <div v-if="!isMobileRef">
       <template v-if="!firstLoadingRef">
         <n-menu
-            v-if="user_info.check()"
-            class="menuList"
-            v-model:value="activeKey"
-            mode="horizontal"
-            :options="afterLoginMenu"
+          v-if="user_info.check()"
+          class="menuList"
+          v-model:value="activeKey"
+          mode="horizontal"
+          :options="afterLoginMenu"
         />
         <n-menu v-else class="menuList" v-model:value="activeKey" mode="horizontal" :options="beforeLoginMenu" />
       </template>
@@ -103,11 +103,11 @@ onMounted(() => {});
       </template>
       <template v-else>
         <n-button
-            icon-placement="left"
-            :bordered="false"
-            strong
-            v-if="!firstLoadingRef"
-            @click="
+          icon-placement="left"
+          :bordered="false"
+          strong
+          v-if="!firstLoadingRef"
+          @click="
             dialog.info({
               title: '你得自己帮助自己哦亲',
               content:
