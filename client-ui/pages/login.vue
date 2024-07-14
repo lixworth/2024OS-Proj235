@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { useAuth, useRouter } from '#imports'
-
 const state = reactive({
-  username: 'root',
+  // username: 'root',
   password: 'adminpassword',
 })
 const loading = ref(true)
@@ -36,15 +34,6 @@ onMounted(() => {
           </span>
         </div>
         <UForm :state="state" class="space-y-4">
-          <UFormGroup name="username" label="用户名">
-            <UInput
-              v-model="state.username"
-              icon="i-heroicons-lock-closed"
-              type="text"
-              disabled
-              input-class="disabled:bg-gray-100"
-            />
-          </UFormGroup>
           <UFormGroup name="password" label="密码" class="pb-2">
             <UInput
               v-model="state.password"

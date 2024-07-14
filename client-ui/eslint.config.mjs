@@ -5,4 +5,7 @@ export default antfu({
     '.nuxt',
     '.output',
   ],
+  rules: {
+    "no-undef": "off"
+  }
 })

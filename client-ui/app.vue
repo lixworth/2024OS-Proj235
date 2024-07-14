@@ -6,7 +6,7 @@
     <Title>System Updater</Title>
   </Head>
   <div id="updater">
-    <nuxt-page />
+    <NuxtPage />
     <DarkSwitch />
   </div>
 </template>
