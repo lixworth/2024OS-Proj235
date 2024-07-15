@@ -15,10 +15,30 @@ function handleLogout() {
   toast.add({ title: '登出成功!' })
   useRouter().push({ path: '/' })
 }
+const info = ref({
+  hostname: 'loading',
+  kernelArch: 'loading',
+  kernelVersion: 'loading',
+  os: 'loading',
+  platformFamily: 'loading',
+  platformVersion: 'loading',
+})
+
+onMounted(async () => {
+  const res: {
+    error: number
+    data: any
+  } = await $fetch('/api/info', {
+    method: 'GET',
+  })
+  if (res.error === 0) {
+    info.value = res.data.info
+  }
+})
 </script>
 
 <template>
-  <div class="h-screen  flex pt-36 justify-center overlay">
+  <div class="h-screen flex pt-20 md:pt-36 justify-center overlay">
     <div class="max-w-4xl w-full">
       <div class="absolute top-4 left-4">
         <UButton
@@ -42,21 +62,14 @@ function handleLogout() {
             OTA版本升级系统
           </p>
         </div>
-        <UAlert
-          class="mt-6"
-          icon="i-heroicons-shield-exclamation"
-          color="orange"
-          variant="soft"
-          title="新版本更新 v1.0.1 -> v1.1.0"
-          description="当前系统版本 (v1.0.1) 低于最新版本 (v1.1.0) ，建议尽快更新到最新系统，保证系统安全稳定！"
-        />
+
         <div class="mt-6 border-t border-gray-200 dark:border-gray-600">
           <dl class="divide-y divide-gray-200 dark:divide-gray-600">
             <UpdaterListPanelVue title="设备名称">
-              lixworth@WorthdeMacBook-Pro-2.local
+              {{ info.hostname }}
             </UpdaterListPanelVue>
             <UpdaterListPanelVue title="硬件信息">
-              Apple M1 Pro / 16384MiB
+              {{ info.os }} {{ info.platformVersion }} {{ info.kernelArch }}
             </UpdaterListPanelVue>
             <UpdaterListPanelVue title="系统版本">
               <UBadge color="primary" size="lg" variant="soft">
@@ -64,7 +77,7 @@ function handleLogout() {
               </UBadge>
               (d41d8cd98f00b204e9800998ecf8427e)
             </UpdaterListPanelVue>
-            <UpdaterListPanelVue title="手动更新">
+            <UpdaterListPanelVue title="更新">
               <UButton
                 icon="i-heroicons-arrow-path"
                 size="md"
@@ -78,9 +91,17 @@ function handleLogout() {
               >
                 手动上传升级包
               </UButton>
+              <UAlert
+                class="mt-6"
+                icon="i-heroicons-shield-exclamation"
+                color="orange"
+                variant="soft"
+                title="新版本更新 v1.0.1 -> v1.1.0"
+                description="当前系统版本 (v1.0.1) 低于最新版本 (v1.1.0) ，建议尽快更新到最新系统，保证系统安全稳定！"
+              />
             </UpdaterListPanelVue>
             <UpdaterListPanelVue title="升级设置">
-              <span>111</span>
+              <UpdaterUpdateSetting />
             </UpdaterListPanelVue>
             <UpdaterListPanelVue title="升级日志">
               <ul role="list" class="divide-y divide-gray-100 dark:divide-gray-600 rounded-md border border-gray-200 dark:border-gray-600">
