@@ -17,8 +17,16 @@ func LoginHandler(context *gin.Context) {
 		context.JSON(200, common.Response(1, nil))
 		return
 	}
-
-	context.JSON(200, gin.H{
-		"msg": "hello world",
-	})
+	res := common.Response(1, nil)
+	if req.Account == "root" && req.Password == "root" {
+		res.Error = 0
+		res.Data = struct {
+			Token string `json:"token"`
+		}{
+			Token: "token",
+		}
+	} else {
+		res.Error = 1
+	}
+	context.JSON(200, res)
 }
