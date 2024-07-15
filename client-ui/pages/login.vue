@@ -1,21 +1,61 @@
 <script setup lang="ts">
 const state = reactive({
-  // username: 'root',
+  username: 'root',
   password: 'adminpassword',
 })
 const loading = ref(true)
 const auth = useAuth()
-function onSubmit() {
-  auth.value = true
-  useRouter().push({
-    path: '/',
-  })
-}
+const session = useAuthSession()
+const error = ref('')
+
 const pwd_visiable = ref(false)
 
+const toast = useToast()
+
 onMounted(() => {
+  if (auth.value) {
+    useRouter().push({ path: '/' })
+  }
   loading.value = false
 })
+
+watch(() => state.password, () => {
+  error.value = ''
+})
+async function onSubmit() {
+  loading.value = true
+  try {
+    const res: {
+      error: number
+      data: {
+        token: string
+      }
+    } = await $fetch('/api/auth', {
+      method: 'POST',
+      body: {
+        account: state.username,
+        password: state.password,
+        scence: 'client-ui',
+      },
+    })
+
+    if (res.error === 0) {
+      session.value = res.data.token
+      auth.value = true
+      toast.add({ title: '登录成功!' })
+      useRouter().push({
+        path: '/',
+      })
+    }
+    else {
+      error.value = '密码错误，请重试'
+    }
+  }
+  catch {
+    loading.value = false
+  }
+  loading.value = false
+}
 </script>
 
 <template>
@@ -33,10 +73,11 @@ onMounted(() => {
             登陆到OTA版本升级系统
           </span>
         </div>
-        <UForm :state="state" class="space-y-4">
-          <UFormGroup name="password" label="密码" class="pb-2">
+        <UForm :state="state" class="space-y-4" @submit="onSubmit">
+          <UFormGroup name="password" label="密码" class="pb-2" :error="error">
             <UInput
               v-model="state.password"
+              :color="error ? 'red' : 'gray'"
               placeholder="请输入操作密码"
               icon="i-heroicons-lock-closed"
               :type="pwd_visiable ? 'text' : 'password'"

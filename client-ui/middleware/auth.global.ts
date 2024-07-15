@@ -1,5 +1,5 @@
-export default defineNuxtRouteMiddleware((from,to) => {
-  if(from.name != 'login' && !useAuth().value){
-    return navigateTo('login');
+export default defineNuxtRouteMiddleware((from) => {
+  if (from.name !== 'login' && !useAuth().value) {
+    return navigateTo('login')
   }
 })

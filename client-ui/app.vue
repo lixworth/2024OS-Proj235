@@ -9,6 +9,7 @@
     <NuxtPage />
     <DarkSwitch />
   </div>
+  <UNotifications />
 </template>
 
 <style lang="css">

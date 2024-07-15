@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const toast = useToast()
 const logs = ref([{
   id: 1,
   title: '20240202230010010102.log',
@@ -8,6 +9,12 @@ const logs = ref([{
   title: '20240201210010010102.log',
   size: '2.1kb',
 }])
+
+function handleLogout() {
+  useLogout()
+  toast.add({ title: '登出成功!' })
+  useRouter().push({ path: '/' })
+}
 </script>
 
 <template>
@@ -18,9 +25,10 @@ const logs = ref([{
           to="/login"
           color="gray"
           variant="ghost"
-          class="inline-flex items-center" icon="i-heroicons-arrow-left" size="lg"
+          class="inline-flex items-center"
+          icon="i-heroicons-arrow-left" size="lg" @click="handleLogout"
         >
-          返回
+          退出
         </UButton>
       </div>
       <UCard
