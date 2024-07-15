@@ -12,7 +12,7 @@ func ExecCommand(command string) (string, error) {
 
 type ResponseTemplate struct {
 	Error int `json:"error"`
-	Data  any
+	Data  any `json:"data"`
 }
 
 func Response(error int, data interface{}) ResponseTemplate {
