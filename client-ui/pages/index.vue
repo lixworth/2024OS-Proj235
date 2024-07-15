@@ -68,7 +68,7 @@ onMounted(async () => {
             <UpdaterListPanelVue title="设备名称">
               {{ info.hostname }}
             </UpdaterListPanelVue>
-            <UpdaterListPanelVue title="硬件信息">
+            <UpdaterListPanelVue title="架构信息">
               {{ info.os }} {{ info.platformVersion }} {{ info.kernelArch }}
             </UpdaterListPanelVue>
             <UpdaterListPanelVue title="系统版本">
