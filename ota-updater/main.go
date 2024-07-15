@@ -7,9 +7,11 @@ import (
 	"os"
 	"ota-updater/internal"
 	"ota-updater/internal/flag"
+	"ota-updater/internal/storage"
 )
 
 func main() {
+	storage.Test()
 	err := flag.InitFlagsHandler()
 	if err != nil {
 		panic(err)
@@ -24,7 +26,7 @@ func main() {
 	router.NoRoute(func(context *gin.Context) {
 		context.Redirect(http.StatusFound, "/#/")
 	})
-	err = router.Run(":8000")
+	err = router.Run(":9301")
 	if err != nil {
 		panic(err)
 	}

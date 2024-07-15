@@ -5,23 +5,20 @@ import (
 )
 
 type Flag struct {
-	RuntimeDir string
-	ConfigFile string
-	NuxtOutput string
+	NuxtOutput  string
+	StoragePath string
 }
 
 var flags Flag
 
 func InitFlagsHandler() error {
 	NuxtOutput := flag.String("nuxt_output", "./../client-ui/.output/public", "Nuxt Output directory")
-	RuntimeDir := flag.String("runtime_dir", "./runtime/", "Runtime directory")
-	ConfigFile := flag.String("config_file", "./config.toml", "Config file path")
+	StoragePath := flag.String("storage_path", "./storage", "DB Storage Path")
 	flag.Parse()
 
 	flags = Flag{
-		RuntimeDir: *RuntimeDir,
-		ConfigFile: *ConfigFile,
-		NuxtOutput: *NuxtOutput,
+		NuxtOutput:  *NuxtOutput,
+		StoragePath: *StoragePath,
 	}
 	return nil
 }
