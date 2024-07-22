@@ -18,7 +18,7 @@ func LoginHandler(context *gin.Context) {
 		return
 	}
 	res := common.Response(1, nil)
-	if req.Account == "root" && req.Password == "root" {
+	if req.Account == "root" && req.Password == "passwordroot" { // 临时
 		res.Error = 0
 		res.Data = struct {
 			Token string `json:"token"`

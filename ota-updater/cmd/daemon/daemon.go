@@ -21,7 +21,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
 	CheckEnvironment()
 	storage.InitBadgerDB()
 	internal.InitHTTPServer()

@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/shirou/gopsutil/v4/host"
 	"ota-updater/internal/common"
@@ -22,7 +21,6 @@ func InfoHandler(context *gin.Context) {
 	if err != nil {
 		return
 	}
-	fmt.Println(info)
 	res := common.Response(0, struct {
 		Info InfoType `json:"info"`
 	}{

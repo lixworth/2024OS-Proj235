@@ -28,3 +28,8 @@ go.work.sum
 .vscode/
 storage_path/
 runtime/
+
+./daemon
+./daemon.exe
+./sys-upgrade
+./sys-upgrade.exe
