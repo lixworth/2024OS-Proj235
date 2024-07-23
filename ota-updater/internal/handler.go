@@ -1,10 +1,12 @@
 package internal
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"ota-updater/internal/common"
 	"ota-updater/internal/flag"
+	"ota-updater/internal/storage"
 	"ota-updater/services"
 )
 
@@ -21,6 +23,33 @@ func RegisterRouter(router *gin.Engine) {
 	router.POST("/api/update", services.UpdateHandler)              // 提交更新任务到最新版本
 	router.POST("/api/check-version", services.CheckVersionHandler) // 检测更新
 	router.POST("/api/manual-update", services.ManualUpdateHandler) // 手动更新
+}
+
+func CheckInitial() bool {
+	res, err := storage.GetValue("initial")
+	fmt.Println(res)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+func Bootstrap() {
+	// 检测初次启动
+	if CheckInitial() {
+		err := storage.SetValue("initial", "okay")
+		if err != nil {
+			panic(err)
+		}
+		hash, err := common.PasswordHash("passwordroot")
+		if err != nil {
+			panic(err)
+		}
+		err = storage.SetValue("password", hash)
+		if err != nil {
+			panic(err)
+		}
+	}
 }
 
 func InitHTTPServer() {

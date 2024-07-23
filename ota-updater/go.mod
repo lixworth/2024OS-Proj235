@@ -5,6 +5,7 @@ go 1.22
 require (
 	github.com/dgraph-io/badger/v4 v4.2.0
 	github.com/gin-gonic/gin v1.10.0
+	github.com/nyancatda/AyaLog/v2 v2.1.5
 	github.com/shirou/gopsutil/v4 v4.24.6
 	golang.org/x/crypto v0.25.0
 )

@@ -1,7 +1,22 @@
 package main
 
-import "fmt"
+import (
+	"flag"
+	"ota-updater/internal/logger"
+)
+
+type Flag struct {
+	NuxtOutput    string
+	StoragePath   string
+	ListenAddress string
+}
+
+var flags Flag
 
 func main() {
-	fmt.Println("OTA-UPGRADE CLI Project")
+	logger.InitLogger()
+	logger.GetLogger().Info("SystemUpgrade", "OTA-UPGRADE CLI Project")
+
+	flag.Parse()
+	flags = Flag{}
 }

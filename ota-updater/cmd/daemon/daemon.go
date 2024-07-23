@@ -23,6 +23,10 @@ func main() {
 	}
 	CheckEnvironment()
 	storage.InitBadgerDB()
+	internal.Bootstrap()
 	internal.InitHTTPServer()
+	defer func() {
+		storage.CloseBadgeDB()
+	}()
 	return
 }

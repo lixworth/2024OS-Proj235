@@ -52,6 +52,7 @@ async function onSubmit() {
     }
   }
   catch {
+    toast.add({ title: '无法连接守护进程，请重试!', color: 'red', icon: 'i-heroicons-exclamation-circle' })
     loading.value = false
   }
   loading.value = false
