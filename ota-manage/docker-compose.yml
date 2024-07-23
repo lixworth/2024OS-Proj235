@@ -1,0 +1,59 @@
+version: '3'
+services:
+  ota-frontend:
+    container_name: ota-frontend
+    image: ota-frontend
+    restart: always
+    build:
+      context: ./ota-frontend
+    volumes:
+      - ./ota-frontend:/opt/www/ota-frontend
+    networks:
+      - ota_manage_network
+    ports:
+      - 80:8080
+    environment:
+      - API_PROXY=ota-backend:9501
+  mysql:
+    image: mysql:8.0.26
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: ota_manage
+    restart: always
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - ota_manage_network
+    ports:
+      - "33060:3306"
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "63790:6379"
+    networks:
+      - ota_manage_network
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --appendfsync everysec  --aof-use-rdb-preamble yes  #开启aof混合持久化
+  ota-backend:
+    container_name: ota-backend
+    image: ota-backend
+    build:
+      context: ./ota-backend
+    restart: always
+    volumes:
+      - ./ota-backend:/opt/www/ota-backend
+    networks:
+      - ota_manage_network
+    ports:
+      - 9501:9501
+    environment:
+      - APP_ENV=prod
+      - SCAN_CACHEABLE=false
+    depends_on:
+      - mysql
+      - redis
+networks:
+  default:
+    name: ota_manage_network

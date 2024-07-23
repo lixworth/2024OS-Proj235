@@ -19,3 +19,9 @@ sudo resize2fs $output_device
 
 echo "Image writing completed!"
 exit 0
+=======
+# 使用dd命令将镜像写入/dev/sda
+sudo dd if="$img_path" | pv | dd of=/dev/sda bs=4M status=progress
+
+echo "镜像已成功写入 /dev/sda。"
+sudo resize2fs /dev/sda 
