@@ -30,6 +30,7 @@ check_and_install() {
 check_and_install busybox
 check_and_install wget
 check_and_install bash
+check_and_install switchconf
 check_and_install curl
 
 echo "检查和安装完成。"
