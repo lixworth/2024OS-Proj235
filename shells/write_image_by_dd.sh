@@ -13,5 +13,4 @@ img_path="$1"
 sudo dd if="$img_path" of=/dev/sda bs=4M status=progress
 
 echo "镜像已成功写入 /dev/sda。"
-
 sudo resize2fs /dev/sda 
