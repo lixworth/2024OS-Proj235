@@ -1,5 +1,6 @@
 #!/bin/sh
-
+echo "1 install check env....."
+mkdir /usr/metro2014/
 # 检查包管理器
 if command -v apt-get &>/dev/null; then
     package_manager="apt"
@@ -13,6 +14,8 @@ elif command -v dnf &>/dev/null; then
     package_manager="dnf"
 elif command -v aptitue &>/dev/null; then
     package_manager="aptitue"
+elif command -v oma &>/dev/null; then
+    package_manager="oma"
 else
     echo "无法识别系统的包管理器。"
     exit 1
