@@ -96,3 +96,6 @@ Gitlab镜像仓库：https://gitlab.eduxiji.net/T202413198993225/project2210132-
     * home ~ 用户文件所在地,是切换系统的同时保留设置的最基本文件夹
     * var ~ 至少tftp serv默认位置在这里
     * snap ~ ubuntu常见
+
+
+## 以下是webui截图
