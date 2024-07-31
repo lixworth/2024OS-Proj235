@@ -81,3 +81,18 @@ Gitlab镜像仓库：https://gitlab.eduxiji.net/T202413198993225/project2210132-
   * 默认用户密码 passwordroot
 * 修改升级服务器为 ota-manage 的API地址 例如: https://cscc.kokomi.ltd/api
 * 检查更新/手动上传更新
+
+## **安装要求**
+* 适用于分区类型为MBR&GPT
+
+![alt text](image.png)
+
+* 磁盘分区要求: 
+  * 一个启动分区(通常为efi)
+  * 两个uuid不相同且分区大小相同的分区(文件格式不限,建议f2fs或ext4,使用dd复制的分区须更改为"LABEL=&pathname")
+  * 一个数据分区(挂载常用及定制的目录)如:
+    * opt ~ 
+    * www ~ 是经典的bt面板所在地
+    * home ~ 用户文件所在地,是切换系统的同时保留设置的最基本文件夹
+    * var ~ 至少tftp serv默认位置在这里
+    * snap ~ ubuntu常见
