@@ -1,6 +1,6 @@
 #!/bin/bash
 
-web_version=$(curl -s "https://pomhub.xyz/update.txt" | grep -oE '[0-9]{4}[0-9]{2}[0-9]{2}')
+web_version=$(curl -s "https://ota.1280768.xyz/version.txt" | grep -oE '[0-9]{4}[0-9]{2}[0-9]{2}')
 
 # 网页上的镜像 URL
 web_image_url="https://pomhub.xyz/upgrade/系统版本/$web_version.img"
