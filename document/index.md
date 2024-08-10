@@ -101,6 +101,7 @@ Gitlab镜像仓库：https://gitlab.eduxiji.net/T202413198993225/project2210132-
     * var ~ 至少tftp serv默认位置在这里
     * snap ~ ubuntu常见
 =======
+=======
 
 
 ## 截图
