@@ -57,6 +57,17 @@ Gitlab镜像仓库：https://gitlab.eduxiji.net/T202413198993225/project2210132-
 ### ota-manage 
 基于 Hyperf + ArcoDesignPro 构建的前后端版本与终端管理平台。
 
+## 测试情况
+
+| 操作系统       | 测试架构     | 启动方式    |  测试结果 |
+|---------------|------------|------------|----------|
+| Ubuntu/Debian | x86        | grub | &#10004; |
+| openKylin     | x86        | grub | &#10004; |
+| ArchLinux     | x86        | grub | &#10004; |
+| openEuler     | x86        | grub | &#10004; |
+| Deepin        | risc-v     | grub/uboot | &#10004; |
+| AOSC          | x86        | grub | &#10004; |
+
 ## 安装编译
 * 构建 client-ui
   * cd clinet-ui/
@@ -78,7 +89,7 @@ Gitlab镜像仓库：https://gitlab.eduxiji.net/T202413198993225/project2210132-
 ## **安装要求**
 * 适用于分区类型为MBR&GPT
 
-![alt text](image.png)
+![alt text](./screenshot/image.png)
 
 * 磁盘分区要求: 
   * 一个启动分区(通常为efi)
@@ -89,3 +100,10 @@ Gitlab镜像仓库：https://gitlab.eduxiji.net/T202413198993225/project2210132-
     * home ~ 用户文件所在地,是切换系统的同时保留设置的最基本文件夹
     * var ~ 至少tftp serv默认位置在这里
     * snap ~ ubuntu常见
+=======
+=======
+
+
+## 截图
+![截屏2024-07-15%2022.03.59](./screenshot/截屏2024-07-15%2022.03.59.png)
+![截屏2024-07-28%2013.26.37](./screenshot/截屏2024-07-28%2013.26.37.png)
