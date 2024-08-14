@@ -1,0 +1,20 @@
+{
+  "name": "ota-ppt",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "slidev build",
+    "dev": "slidev --open",
+    "export": "slidev export"
+  },
+  "dependencies": {
+    "@slidev/cli": "^0.49.24",
+    "@slidev/theme-apple-basic": "^0.25.1",
+    "@slidev/theme-default": "latest",
+    "@slidev/theme-seriph": "latest",
+    "vue": "^3.4.33"
+  },
+  "devDependencies": {
+    "playwright-chromium": "^1.46.0"
+  }
+}
