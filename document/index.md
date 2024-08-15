@@ -46,6 +46,8 @@ Gitlab镜像仓库：https://gitlab.eduxiji.net/T202413198993225/project2210132-
 ### ota-updater 升级程序客户端
 基于 Golang + Gin 构建，使用 [BadgerDB](https://github.com/dgraph-io/badger) 存储数据，通过 exec 执行 shells 中的命令实现系统级操作。此外除本体守护进程外，也开发了对应管理工具cli应用，用于管理守护进程、执行重置操作。
 
+此外开发了局域网升级的功能，自动发现局域网内设备，上传升级包，进行远程升级。
+
 ### client-ui 升级程序客户端界面
 基于 Nuxt(Vue3) + NuxtUI 构建升级操作界面，与 ota-updater 交互实现系统升级、升级设置、日志查看等操作。
 
@@ -107,3 +109,4 @@ Gitlab镜像仓库：https://gitlab.eduxiji.net/T202413198993225/project2210132-
 ## 截图
 ![截屏2024-07-15%2022.03.59](./screenshot/截屏2024-07-15%2022.03.59.png)
 ![截屏2024-07-28%2013.26.37](./screenshot/截屏2024-07-28%2013.26.37.png)
+![image_3155699396.png](./screenshot/image_3155699396.png)

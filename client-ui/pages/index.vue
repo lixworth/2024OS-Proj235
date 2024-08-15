@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const toast = useToast()
+const dialog = ref(false)
 const logs = ref([{
   id: 1,
   title: '20240202230010010102.log',
@@ -35,6 +36,18 @@ onMounted(async () => {
     info.value = res.data.info
   }
 })
+
+const state = reactive({
+  server: 'http://cscc.kokomi.ltd/api',
+  auto_update: true,
+})
+
+function handleLocalNetwork() {
+  dialog.value = true
+}
+const people = ['10.0.0.31 lixworth-UbuntuDevServer 6.8.0-40-generic GNU/Linux x86_64']
+
+const selected = ref(people[0])
 </script>
 
 <template>
@@ -49,6 +62,15 @@ onMounted(async () => {
           icon="i-heroicons-arrow-left" size="lg" @click="handleLogout"
         >
           退出
+        </UButton>
+
+        <UButton
+          color="gray"
+          variant="ghost"
+          class="inline-flex items-center ml-4"
+          icon="i-heroicons-server-stack" size="lg" @click="handleLocalNetwork"
+        >
+          局域网升级
         </UButton>
       </div>
       <UCard
@@ -130,4 +152,50 @@ onMounted(async () => {
       </UCard>
     </div>
   </div>
+  <UModal v-model="dialog">
+    <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+      <template #header>
+        <h3 class="text-base font-semibold leading-7 text-gray-900 dark:text-white">
+          局域网设备升级
+        </h3>
+      </template>
+
+      <UForm :state="state" class="space-y-4">
+        <UButton
+          type="submit" color="white"
+        >
+          刷新设备列表
+        </UButton>
+        <UFormGroup label="设备" name="email">
+          <USelectMenu v-model="selected" :options="people" />
+        </UFormGroup>
+        <UFormGroup label="设备升级程序密码" name="password">
+          <UInput type="password" />
+        </UFormGroup>
+        <UFormGroup label="升级包" name="email">
+          <UInput type="file" size="sm" icon="i-heroicons-folder" />
+        </UFormGroup>
+      </UForm>
+
+      <template #footer>
+        <div class="flex justify-end">
+          <UButton
+            icon="i-heroicons-x-mark"
+            size="md"
+            class="mr-4"
+            color="white"
+            variant="solid"
+          >
+            取消
+          </UButton>
+          <UButton
+            icon="i-heroicons-arrow-path"
+            size="md"
+          >
+            推送更新任务
+          </UButton>
+        </div>
+      </template>
+    </UCard>
+  </UModal>
 </template>
