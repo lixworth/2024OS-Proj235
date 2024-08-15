@@ -36,6 +36,35 @@ check_and_install bash
 check_and_install switchconf
 check_and_install curl
 check_and_install pv
+check_and_install git
+
+
 
 
 echo "检查和安装完成。"
+
+# 定义变量
+REPO_URL="https://github.com/libiunc/2024OS-Proj235.git"
+TARGET_DIR="/usr/metro2014/shells"
+FOLDER_TO_CLONE="shells"
+
+# 创建并进入目标目录
+mkdir -p $TARGET_DIR
+cd $TARGET_DIR
+
+# 初始化 Git 仓库
+git init
+
+# 添加远程仓库
+git remote add origin $REPO_URL
+
+# 启用稀疏检出
+git sparse-checkout init --cone
+
+# 设置要检出的文件夹
+git sparse-checkout set $FOLDER_TO_CLONE
+
+# 拉取内容
+git pull origin main
+
+echo "Successfully cloned $FOLDER_TO_CLONE from $REPO_URL into $TARGET_DIR enjoy~"# WTF?
