@@ -56,16 +56,15 @@ transition: fade-out
 * 更改挂载点、使用 dd 刷写 （initrd,kernel,rootfs）镜像
 * 安装开机自启应用，监控升级过程，检测重启次数，超出限制回滚回另一系统并标记(灵感源于magisk救砖模块
   
-<hr style="margin-top: 10px;margin-bottom: 10px">
-
-* 局域网升级功能
-* 版本发布管理平台
-* 设备升级管理平台
-
 </div>
 <div>
 
 <img border="rounded" src="/image.png" alt="">
+<br>
+
+* 局域网升级功能
+* 版本发布管理平台
+* 设备升级管理平台
 
 </div>
 </div>
@@ -304,6 +303,12 @@ image: "/image copy.png"
 * livepatchupdate.sh 热更新使用(~~官方后门~~)
 * upd.sh 热更新所用脚本
 * upd.txt 热更新触发用
+
+---
+layout: image-left
+image: "/image copy.png"
+---
+
 * uboot_env_showinfo.sh 当安装设备使用uboot启动时返回相关参数
 * uboot_switch_rootfs.sh 当安装设备使用uboot启动时,用来切换分区的(简单粗暴修改启动分区名,已在rock-5b的三种介质(SPI-nand/eMMC/NVME)上启动)
 
@@ -323,10 +328,17 @@ class: px-20
 | Deepin        | risc-v/x86-64 | grub/uboot | &#10004; |
 | AOSC          | x86-64        | grub | &#10004; |
 
-###测试基于uboot启动的设备有:
+---
+layout: image-right
+image: "/image copy 2.png"
+class: px-20
+---
+
+### 测试基于uboot启动的设备有:
  * rock-5b rk3588 armv8.5-a spi-->nvme\emmc
  * rock-3c rk3566 armv8.5-a spi-->nvme\emmc
  * 星光2(vf2) jh7110 risc-v spi-->nvme\emmc
+  
 ---
 transition: slide-up
 ---
@@ -424,17 +436,21 @@ class: px-20
 * Q: 如何解决客户端访问域名时遭遇的解析问题?
 * A: 遇到dns抢答,这里建议采用Doh缓解,更多请去隔壁代理区详细了解
 <br>
-<br>
+
 
 #### 收获心得
 * Openwrt 中 `sysupgrade` 通过 执行shell脚本 以及 配合 luci webui 界面进行升级的结构
 * Android OTA 更新中的 AB 分区方案(感谢twrp与xda论坛的帖子)
   
-<br>
+---
+layout: center
+class: px-20
+---
 
-由于时间精力原因，并不能完全完善所有设想。开发后期，也了解到了其他小组使用 `ostree` （类似于 git版本控制）的升级方案，确实在实现 OTA 升级问题 上拥有更多优势，未来有时间可能会深入了解一下。
+&nbsp;&nbsp;&nbsp;&nbsp;最后由于时间精力原因，并不能完全完善所有设想。开发后期，也了解到了其他小组使用 `ostree` （类似于 git版本控制）的升级方案，确实在实现 OTA 升级问题 上拥有更多优势，未来有时间可能会深入了解一下。
 
-本次项目制作经历仍然受益匪浅，感谢各位导师!
+&nbsp;&nbsp;&nbsp;&nbsp;本次项目制作经历仍然受益匪浅，感谢各位导师!
+
 ---
 layout: cover
 class: text-center
