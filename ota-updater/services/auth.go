@@ -1,8 +1,9 @@
 package services
 
 import (
-	"github.com/gin-gonic/gin"
 	"ota-updater/internal/common"
+
+	"github.com/gin-gonic/gin"
 )
 
 type LoginRequest struct {
@@ -20,10 +21,11 @@ func LoginHandler(context *gin.Context) {
 	res := common.Response(1, nil)
 	if req.Account == "root" && req.Password == "passwordroot" { // 临时
 		res.Error = 0
+		token, _ := common.PasswordHash("salt" + req.Password)
 		res.Data = struct {
 			Token string `json:"token"`
 		}{
-			Token: "token",
+			Token: token,
 		}
 	} else {
 		res.Error = 1

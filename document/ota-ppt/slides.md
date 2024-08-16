@@ -1,10 +1,9 @@
 ---
 theme: default
-background: https://w.wallhaven.cc/full/3k/wallhaven-3k16pd.png
+background: ./assets/wallhaven-l8x78q.png
 title: Linux的OTA升级系统
 info: |
   Learn more at [Sli.dev](https://sli.dev)
-class: text-center
 drawings:
   persist: false
 transition: slide-left
@@ -12,29 +11,64 @@ mdc: true
 ---
 
 2024年全国大学生计算机系统能力大赛 操作系统设计赛(全国) OS功能挑战赛道 
-# Linux的OTA升级系统
+<h1 style="font-size: 5rem">Linux的OTA升级系统</h1>
 
-项目编号：Proj235 | 队伍名称：地铁行动2014 
+项目编号: Proj235 linux-upgrade-system <i class="circle"></i> 队伍名称：地铁行动2014 
+
+<style>
+.circle {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+}
+.circle:after {
+    content: '';
+    margin: 3px;
+    display: table;
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+}
+</style>
+
+---
+layout: image-left
+image: ./assets/wallhaven-l8x78q.png
+transition: fade-out
+---
+
+# 目录大纲
+<Toc />
 
 ---
 transition: fade-out
 ---
 
-# 需求分析与实现方案：AB分区切换进行系统升级
+# 需求分析与实现方案
 第一题 升级系统的升级功能实现 && 第二题 升级系统基础框架功能实现
-* 单独将 home、opt、usr、var 等与应用配置相关的目录单独设置挂载点
-* 建立AB分区，升级过程中，通过修改 `/etc/fstab` 实现切换分区
-* 更改挂载点、使用dd刷写 （initrd,kernel,rootfs）镜像
-* 建立默认启动应用，检测重启次数，超出限制回滚回另一系统并标记
 
-<hr class="my-4">
+<div grid="~ cols-2 gap-4">
+<div>
 
-* sys-update cli应用
-  * sys-update switch_ab/update/check/reset-pwd [arg]
-* webclient web交互界面
-  * 升级包上传、校验、执行升级
-  * 日志查询
-  * 升级任务管理、升级队列状态查询
+* 设立单独数据分区，将 home、opt、usr、var、www 等与设备配置相关的目录单独进行挂载点
+* 建立类似安卓的AB分区，升级过程中，通过修改 `/etc/fstab` 实现切换分区
+* 更改挂载点、使用 dd 刷写 （initrd,kernel,rootfs）镜像
+* 安装开机自启应用，监控升级过程，检测重启次数，超出限制回滚回另一系统并标记
+  
+<hr style="margin-top: 10px;margin-bottom: 10px">
+
+* 局域网升级功能
+* 版本发布管理平台
+* 设备升级管理平台
+
+</div>
+<div>
+
+<img border="rounded" src="./assets/image.png" alt="">
+
+</div>
+</div>
 
 <style>
 h1 {
@@ -53,27 +87,212 @@ transition: slide-up
 level: 2
 ---
 
+# 整体架构
+
+升级程序总共分为 **ota-updater 升级程序** 与 **ota-manage 管理平台** 俩个部分。
+
+* ota-updater 由 多个 客户端设备部署
+* ota-manage 由 一个 管理服务端设备运行
+
+<img src="./assets/LINUX系统OTA升级.png" alt="LINUX系统OTA升级.png" style="width: 100%" />
+
+---
+transition: slide-up
+level: 2
+---
+
+<div grid="~ cols-2 gap-4">
+<div>
+
 # 技术实现
 
-升级程序总共分为 ota-updater 升级程序 与 ota-manage 管理平台俩部分， 其中 shells、client-ui 为 ota-updater 提供操作逻辑与操作界面，ota-manage 为独立的前后端分离架构WEB平台，提供管理界面与API。
+### 1. ota-updater 升级程序客户端
 
-### ota-updater 升级程序客户端
-基于 Golang + Gin 构建，使用 [BadgerDB](https://github.com/dgraph-io/badger) 存储数据，通过 exec 执行 shells 中的命令实现系统级操作。此外除本体守护进程外，也开发了对应管理工具cli应用，用于管理守护进程、执行重置操作。
+<br>
 
-### client-ui 升级程序客户端界面
+* 基于 **Golang + Gin** 开发的多模块应用
+* 使用 BadgerDB 用于作为 KV 存储引擎
+  * 数据加密 （存储 webui 登录密码）
+  * 存储日志
+  * 存储队列 （取代 redis）
+
+<br>
+
+* 模块：cmd/sys-updater cli 应用 
+  * 软链接到 /bin/sys-updater
+  * sys-update switch_ab/update/check-update/reset-pwd [args]....
+  * 对一些操作进行封装，用于手动操作或查看调试信息
+  
+</div>
+<div>
+
+```go
+var db *badger.DB
+
+// InitBadgerDB KV Storage https://github.com/dgraph-io/badger/
+func InitBadgerDB() {
+	opts := badger.DefaultOptions(flag.GetFlags().StoragePath).WithIndexCacheSize(100 << 20)
+	opts.IndexCacheSize = 100 << 20
+	conn, err := badger.Open(opts)
+	if err != nil {
+		panic(err)
+	}
+	db = conn
+}
+func CloseBadgeDB() {
+	err := getDB().Close()
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+func getDB() *badger.DB {
+	if db == nil {
+		InitBadgerDB()
+	}
+	return db
+}
+```
+</div>
+</div>
+  
+---
+transition: slide-up
+level: 2
+---
+
+* 模块：cmd/daemon 守护进程  
+  * 维护更新队列、检查更新任务 cron/job
+  * 提供 WEBUI 供用户操作，由 WEBUI 可套壳窗口应用等
+  * 提供应用程序 HTTP API 接口
+
+<br>
+
+```go {all|3-6|8-15|all} twoslash
+func RegisterRouter(router *gin.Engine) {
+	// frontend: client ui
+	router.Static("/_nuxt", flag.GetFlags().NuxtOutput+"/_nuxt")
+	router.StaticFile("/favicon.ico", flag.GetFlags().NuxtOutput+" /favicon.ico")
+	router.StaticFile("/", flag.GetFlags().NuxtOutput+"/index.html")
+
+	// backend: api
+	router.POST("/api/auth", services.LoginHandler)
+	router.GET("/api/info", services.InfoHandler)                   // 系统信息
+	router.GET("/api/check-status", services.CheckStatusHandler)    // 检测更新状态
+	router.POST("/api/update", services.UpdateHandler)              // 提交更新任务到最新版本
+	router.POST("/api/check-version", services.CheckVersionHandler) // 检测更新
+	router.POST("/api/manual-update", services.ManualUpdateHandler) // 手动更新
+}
+```
+
+---
+transition: slide-up
+level: 2
+---
+
+* client-ui 升级程序客户端界面
 基于 Nuxt(Vue3) + NuxtUI 构建升级操作界面，与 ota-updater 交互实现系统升级、升级设置、日志查看等操作。
+
+<div grid="~ cols-2 gap-4">
+<div>
+
+```ts
+async function onSubmit() {
+  try {
+    const res: { error: number,data: { token: string } } = 
+    await $fetch('/api/auth', {
+      method: 'POST', body: { account: state.username, password: state.password, scence: 'client-ui', },
+    })
+    if (res.error === 0) {
+      session.value = res.data.token
+      auth.value = true
+      toast.add({ title: '登录成功!' })
+      useRouter().push({ path: '/',})
+    } else {
+      error.value = '密码错误，请重试'
+    }
+  } catch {
+    toast.add({ title: '无法连接守护进程，请重试!', color: 'red', icon: 'i-heroicons-exclamation-circle' })
+  }
+  loading.value = false
+}
+```
+
+</div>
+<div>
 
 * 由 ota-updater 启动 HTTP服务器，由根目录输出 client-ui 前端构建的静态文件
 * client-ui 通过 fetch 向后端 API 发起请求
+
+</div>
+</div>
+
+---
+layout: image-left
+image: "./assets/截屏2024-07-15 22.03.59.png"
+---
+
 * `/login` 登陆页面 基于浏览器 SessionStorage 和 Token 的鉴权-机制
-* `/` 主页面 负责查看当前系统/版本信息、版本检查更新、手动更新、更新设置等操作
+
+```ts
+import { useSessionStorage } from '#imports'
+
+const auth = ref(false)
+
+export function useAuthSession() {
+  return useSessionStorage('AuthToken', 'null')
+}
+
+export function useAuth() {
+  if (useAuthSession().value === 'null') {
+    auth.value = false
+  }
+  else {
+    auth.value = true
+  }
+  return auth
+}
+
+export function useLogout() {
+  useAuthSession().value = 'null'
+  auth.value = false
+}
+```
+
+---
+transition: slide-up
+level: 2
+---
+
+* `/` 主页面 查看当前系统/版本信息、版本检查更新、手动更新、更新设置等操作
+
+<img src="./assets/截屏2024-07-28 13.26.37.png" style="width: 75%" />
+
+---
+layout: image-left
+image: "./assets/image_3155699396.png"
+---
+### 局域网升级
+* nmap 扫描局域网 
+  * 发现 sys-updater 守护进程中的 API 服务
+  * 获取到对应设备的设备信息与版本
+  
+<br>
+
+* 任意局域网内的客户端发起 局域网设备升级操作
+  * 上传升级包
+  * 输入所更新局域网设备的 sys-updater 密码
+  * P2P 发送升级包
+
+<br>
+
+在一些特殊情况下，无法访问外网或者说更新服务器的时候，便可使用这种方法，更新局域网的设备群。
 
 ---
 layout: image-right
-image: https://cover.sli.dev
+image: "./assets/image copy.png"
 ---
 
-# 升级脚本运行过程
+### 升级脚本
 
 * check_img.sh 校验升级镜像文件
 * write_image_by_dd.sh 用 dd 写入镜像
@@ -84,37 +303,10 @@ image: https://cover.sli.dev
 * sysupdate.sh 系统更新
 
 ---
----
-
-# 安装要求
-
-<div grid="~ cols-2 gap-4">
-<div>
-
-* 适用于分区类型为MBR&GPT
-* 磁盘分区要求: 
-  * 一个启动分区(通常为efi)
-  * 两个uuid不相同且分区大小相同的分区(文件格式不限,建议f2fs或ext4,使用dd复制的分区须更改为"LABEL=&pathname")
-  * 一个数据分区(挂载常用及定制的目录)如:
-    * opt ~ 
-    * www ~ 是经典的bt面板所在地
-    * home ~ 用户文件所在地,是切换系统的同时保留设置的最基本文件夹
-    * var ~ 至少tftp serv默认位置在这里
-    * snap ~ ubuntu常见
-
-</div>
-<div>
-
-<img border="rounded" src="https://github.com/lixworth/2024OS-Proj235/raw/master/document/screenshot/image.png" alt="">
-
-</div>
-</div>
-
----
 class: px-20
 ---
 
-# 测试情况
+### 测试情况
 
 | 操作系统       | 测试架构     | 启动方式    |  测试结果 |
 |---------------|------------|------------|----------|
@@ -126,26 +318,115 @@ class: px-20
 | AOSC          | x86        | grub | &#10004; |
 
 ---
+transition: slide-up
+---
+
+* ota-manage 管理程序服务端
+<small>
+基于 Hyperf + ArcoDesignPro 构建的 前后端分离 版本发布与设备管理平台。
+</small>
+<div grid="~ cols-2 gap-4">
+<div>
+
+```yaml
+version: '3'
+services:
+  ota-frontend:
+    container_name: ota-frontend
+    image: ota-frontend
+    restart: always
+    build:
+      context: ./ota-frontend
+    volumes:
+      - ./ota-frontend:/opt/www/ota-frontend
+    networks:
+      - ota_manage_network
+    ports:
+      - 80:8080
+    environment:
+      - API_PROXY=ota-backend:9501
+  mysql:
+    image: mysql:8.0.26
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: ota_manage
+    restart: always
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - ota_manage_network
+    ports:
+      - "33060:3306"
+```
+</div>
+<div>
+
+```yaml
+redis:
+    image: redis
+    restart: always
+    ports:
+      - "63790:6379"
+    networks:
+      - ota_manage_network
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --appendfsync everysec  --aof-use-rdb-preamble yes  #开启aof混合持久化
+  ota-backend:
+    container_name: ota-backend
+    image: ota-backend
+    build:
+      context: ./ota-backend
+    restart: always
+    volumes:
+      - ./ota-backend:/opt/www/ota-backend
+    networks:
+      - ota_manage_network
+    ports:
+      - 9501:9501
+    environment:
+      - APP_ENV=prod
+      - SCAN_CACHEABLE=false
+    depends_on:
+      - mysql
+      - redis
+networks:
+  default:
+    name: ota_manage_network
+
+```
+</div>
+</div>
+
+
+---
 class: px-20
 ---
+# 项目收获
 
-# 使用与演示 
+#### 开发过程中所遇问题
+* Q: 传统开发项目中，需外挂 redis、持久化db 等数据库用来存储信息与维护队列，但是系统级应用需轻量
+* A：采用 BadgerDB/SqlLite 类型的 “自给自足的、无服务器的、零配置的” 数据库软件
 
-* 访问 http://127.0.0.1:9301/
-  * 默认用户密码 passwordroot
-  * 使用cli工具重置密码
-* 修改升级服务器为 ota-manage 的API地址 例如: https://cscc.kokomi.ltd/api
-* 检查更新/手动上传更新
+<br>
+<br>
 
-<div grid="~ cols-2 gap-2" m="t-2">
-<img border="rounded" src="https://github.com/lixworth/2024OS-Proj235/raw/master/document/screenshot/%E6%88%AA%E5%B1%8F2024-07-15%2022.03.59.png" alt="">
-<img border="rounded" src="https://github.com/lixworth/2024OS-Proj235/raw/master/document/screenshot/%E6%88%AA%E5%B1%8F2024-07-28%2013.26.37.png" alt="">
-</div>
+#### 收获心得
+* Openwrt 中 `sysupgrade` 通过 执行shell脚本 以及 配合 luci webui 界面进行升级的结构
+* Android OTA 更新中的 AB 分区方案
+  
+<br>
+
+由于时间精力原因，并不能完全完善所有设想。开发后期，也了解到了其他小组使用 `ostree` （类似于 git版本控制）的升级方案，确实在实现 OTA 升级问题 上拥有更多优势，未来有时间可能会深入了解一下。
+
+本次项目制作经历仍然受益匪浅，感谢各位导师!
 ---
-layout: center
+layout: cover
 class: text-center
 ---
 
-# 感谢观看
+# 感谢指导
+@lixworth 2024年8月   
 
-<PoweredBySlidev mt-10 />
+<PoweredBySlidev mt-10/>
+
