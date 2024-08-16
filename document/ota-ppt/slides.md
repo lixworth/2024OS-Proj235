@@ -51,10 +51,10 @@ transition: fade-out
 <div grid="~ cols-2 gap-4">
 <div>
 
-* 设立单独数据分区，将 home、opt、usr、var、www 等与设备配置相关的目录单独进行挂载点
+* 设立单独数据分区，将 home、opt、usr、var、www 等与设备配置相关的目录单独进行挂载点或软链接(硬的不能跨文件系统和chmod相关问题)
 * 建立类似安卓的AB分区，升级过程中，通过修改 `/etc/fstab` 实现切换分区
 * 更改挂载点、使用 dd 刷写 （initrd,kernel,rootfs）镜像
-* 安装开机自启应用，监控升级过程，检测重启次数，超出限制回滚回另一系统并标记
+* 安装开机自启应用，监控升级过程，检测重启次数，超出限制回滚回另一系统并标记(灵感源于magisk救砖模块
   
 <hr style="margin-top: 10px;margin-bottom: 10px">
 
@@ -91,8 +91,8 @@ level: 2
 
 升级程序总共分为 **ota-updater 升级程序** 与 **ota-manage 管理平台** 俩个部分。
 
-* ota-updater 由 多个 客户端设备部署
-* ota-manage 由 一个 管理服务端设备运行
+* ota-updater 由 多个 客户端设备部署,可设置定时访问管理终端(ip or domain:port/auth){客户端访问服务器获取数据.jpeg}.
+* ota-manage 由 一个 管理服务端设备运行,可以不和客户端设备在相同网段,支持密码登陆和yubikey类设备登陆后二次认证(steam手机令牌)
 
 <img src="/LINUX系统OTA升级.png" alt="LINUX系统OTA升级.png" style="width: 100%" />
 
@@ -279,9 +279,9 @@ image: "/image_3155699396.png"
 <br>
 
 * 任意局域网内的客户端发起 局域网设备升级操作
-  * 上传升级包
+  * 上传升级包(~~简单粗暴scp~~)
   * 输入所更新局域网设备的 sys-updater 密码
-  * P2P 发送升级包
+  * 采用 `P2P`的方式来推送升级包
 
 <br>
 
@@ -293,14 +293,19 @@ image: "/image copy.png"
 ---
 
 ### 升级脚本
-
-* check_img.sh 校验升级镜像文件
-* write_image_by_dd.sh 用 dd 写入镜像
+* 1stinstall.sh 首次安装时使用,检查包管理和写入安装目录
+* check_img.sh 使用sha-256校验升级镜像文件
+* write_image_by_dd.sh 根据传入参数作为路径并用 `dd` 写入镜像
 * ab_switch.sh 通过修改 `/etc/fstab` 实现AB分区的切换
 * check-osfullinfo.sh 检测系统信息
 * check-install-sysenv.sh 检测系统依赖
 * check-sysupdate.sh 检测系统更新
-* sysupdate.sh 系统更新
+* sysupdate.sh 系统更新,下载升级包使用的.
+* livepatchupdate.sh 热更新使用(~~官方后门~~)
+* upd.sh 热更新所用脚本
+* upd.txt 热更新触发用
+* uboot_env_showinfo.sh 当安装设备使用uboot启动时返回相关参数
+* uboot_switch_rootfs.sh 当安装设备使用uboot启动时,用来切换分区的(简单粗暴修改启动分区名,已在rock-5b的三种介质(SPI-nand/eMMC/NVME)上启动)
 
 ---
 class: px-20
@@ -310,13 +315,18 @@ class: px-20
 
 | 操作系统       | 测试架构     | 启动方式    |  测试结果 |
 |---------------|------------|------------|----------|
-| Ubuntu/Debian | x86        | grub | &#10004; |
-| openKylin     | x86        | grub | &#10004; |
-| ArchLinux     | x86        | grub | &#10004; |
-| openEuler     | x86        | grub | &#10004; |
-| Deepin        | risc-v     | grub/uboot | &#10004; |
-| AOSC          | x86        | grub | &#10004; |
+| Ubuntu/Debian | x86-64        | grub | &#10004; |
+| armbian | armv8/amd64 | uboot-rockcheap/EFI-grub | &#10004; |
+| openKylin     | x86-64        | grub | &#10004; |
+| ArchLinux     | x86-64        | grub | &#10004; |
+| openEuler     | x86-64        | grub | &#10004; |
+| Deepin        | risc-v/x86-64 | grub/uboot | &#10004; |
+| AOSC          | x86-64        | grub | &#10004; |
 
+###测试基于uboot启动的设备有:
+ * rock-5b rk3588 armv8.5-a spi-->nvme\emmc
+ * rock-3c rk3566 armv8.5-a spi-->nvme\emmc
+ * 星光2(vf2) jh7110 risc-v spi-->nvme\emmc
 ---
 transition: slide-up
 ---
@@ -348,7 +358,7 @@ services:
   mysql:
     image: mysql:8.0.26
     environment:
-      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_ROOT_PASSWORD: root123insmod /lib/modules/$(uname -r)/mtd-rw.ko i_want_a_brick=1
       MYSQL_DATABASE: ota_manage
     restart: always
     volumes:
@@ -407,13 +417,18 @@ class: px-20
 #### 开发过程中所遇问题
 * Q: 传统开发项目中，需外挂 redis、持久化db 等数据库用来存储信息与维护队列，但是系统级应用需轻量
 * A：采用 BadgerDB/SqlLite 类型的 “自给自足的、无服务器的、零配置的” 数据库软件
-
+* Q: 如何解决多设备的统一升级问题?
+* A: 采用局域网内的p2p传输实现
+* Q: 基于uboot的设备在刷入镜像翻车时如何处理?
+* A: 没救了,call砖家吧.~~一般来说能搞炸的自己也能修好~~
+* Q: 如何解决客户端访问域名时遭遇的解析问题?
+* A: 遇到dns抢答,这里建议采用Doh缓解,更多请去隔壁代理区详细了解
 <br>
 <br>
 
 #### 收获心得
 * Openwrt 中 `sysupgrade` 通过 执行shell脚本 以及 配合 luci webui 界面进行升级的结构
-* Android OTA 更新中的 AB 分区方案
+* Android OTA 更新中的 AB 分区方案(感谢twrp与xda论坛的帖子)
   
 <br>
 
@@ -427,6 +442,6 @@ class: text-center
 
 # 感谢指导
 @lixworth 2024年8月   
-
+@libiunc 2024年8月
 <PoweredBySlidev mt-10/>
 
