@@ -1,6 +1,6 @@
 ---
 theme: default
-background: ./public/wallhaven-l8x78q.png
+background: /wallhaven-l8x78q.png
 title: Linux的OTA升级系统
 info: |
   Learn more at [Sli.dev](https://sli.dev)
@@ -34,7 +34,7 @@ mdc: true
 
 ---
 layout: image-left
-image: ./public/wallhaven-l8x78q.png
+image: /wallhaven-l8x78q.png
 transition: fade-out
 ---
 
@@ -65,7 +65,7 @@ transition: fade-out
 </div>
 <div>
 
-<img border="rounded" src="./public/image.png" alt="">
+<img border="rounded" src="/image.png" alt="">
 
 </div>
 </div>
@@ -94,7 +94,7 @@ level: 2
 * ota-updater 由 多个 客户端设备部署
 * ota-manage 由 一个 管理服务端设备运行
 
-<img src="./public/LINUX系统OTA升级.png" alt="LINUX系统OTA升级.png" style="width: 100%" />
+<img src="/LINUX系统OTA升级.png" alt="LINUX系统OTA升级.png" style="width: 100%" />
 
 ---
 transition: slide-up
@@ -228,7 +228,7 @@ async function onSubmit() {
 
 ---
 layout: image-left
-image: "./public/截屏2024-07-15 22.03.59.png"
+image: "/截屏2024-07-15 22.03.59.png"
 ---
 
 * `/login` 登陆页面 基于浏览器 SessionStorage 和 Token 的鉴权-机制
@@ -265,11 +265,11 @@ level: 2
 
 * `/` 主页面 查看当前系统/版本信息、版本检查更新、手动更新、更新设置等操作
 
-<img src="./public/截屏2024-07-28 13.26.37.png" style="width: 75%" />
+<img src="/截屏2024-07-28 13.26.37.png" style="width: 75%" />
 
 ---
 layout: image-left
-image: "./public/image_3155699396.png"
+image: "/image_3155699396.png"
 ---
 ### 局域网升级
 * nmap 扫描局域网 
@@ -289,7 +289,7 @@ image: "./public/image_3155699396.png"
 
 ---
 layout: image-right
-image: "./public/image copy.png"
+image: "/image copy.png"
 ---
 
 ### 升级脚本
