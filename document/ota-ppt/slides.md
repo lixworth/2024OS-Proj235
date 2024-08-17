@@ -62,9 +62,10 @@ transition: fade-out
 <img border="rounded" src="/image.png" alt="">
 <br>
 
+第三题：扩展功能
+
 * 局域网升级功能
-* 版本发布管理平台
-* 设备升级管理平台
+* 版本发布与设备升级管理平台
 
 </div>
 </div>
@@ -264,23 +265,26 @@ level: 2
 
 * `/` 主页面 查看当前系统/版本信息、版本检查更新、手动更新、更新设置等操作
 
-<img src="/截屏2024-07-28 13.26.37.png" style="width: 75%" />
+<div> 
+  <img src="/截屏2024-07-28 13.26.37.png" style="width: 75%"/>
+</div>
 
 ---
 layout: image-left
 image: "/image_3155699396.png"
 ---
+
 ### 局域网升级
 * nmap 扫描局域网 
   * 发现 sys-updater 守护进程中的 API 服务
-  * 获取到对应设备的设备信息与版本
+  * 通过其 API 接口获取到对应设备的设备信息与版本
   
 <br>
 
 * 任意局域网内的客户端发起 局域网设备升级操作
   * 上传升级包(~~简单粗暴scp~~)
   * 输入所更新局域网设备的 sys-updater 密码
-  * 采用 `P2P`的方式来推送升级包
+  * 采用 `P2P` 的方式来推送升级包
 
 <br>
 
@@ -292,22 +296,30 @@ image: "/image copy.png"
 ---
 
 ### 升级脚本
+<br>
+
 * 1stinstall.sh 首次安装时使用,检查包管理和写入安装目录
+* check-osfullinfo.sh 检测系统信息
+* check-install-sysenv.sh 检测系统依赖
+  
+<hr style="margin-top: 10px;margin-bottom: 10px;">
+
 * check_img.sh 使用sha-256校验升级镜像文件
 * write_image_by_dd.sh 根据传入参数作为路径并用 `dd` 写入镜像
 * ab_switch.sh 通过修改 `/etc/fstab` 实现AB分区的切换
-* check-osfullinfo.sh 检测系统信息
-* check-install-sysenv.sh 检测系统依赖
 * check-sysupdate.sh 检测系统更新
 * sysupdate.sh 系统更新,下载升级包使用的.
-* livepatchupdate.sh 热更新使用(~~官方后门~~)
-* upd.sh 热更新所用脚本
-* upd.txt 热更新触发用
 
 ---
 layout: image-left
 image: "/image copy.png"
 ---
+
+* upd.sh 热更新所用脚本
+* upd.txt 热更新触发用
+* livepatchupdate.sh 热更新使用(~~官方后门~~)
+
+<br>
 
 * uboot_env_showinfo.sh 当安装设备使用uboot启动时返回相关参数
 * uboot_switch_rootfs.sh 当安装设备使用uboot启动时,用来切换分区的(简单粗暴修改启动分区名,已在rock-5b的三种介质(SPI-nand/eMMC/NVME)上启动)
@@ -424,17 +436,17 @@ networks:
 ---
 class: px-20
 ---
+
 # 项目收获
 
 #### 开发过程中所遇问题
-* Q: 传统开发项目中，需外挂 redis、持久化db 等数据库用来存储信息与维护队列，但是系统级应用需轻量
+* Q: 传统开发项目中，需外挂 redis、持久化的db 等数据库用来存储信息与维护队列，但是系统级应用需要轻量集成
 * A：采用 BadgerDB/SqlLite 类型的 “自给自足的、无服务器的、零配置的” 数据库软件
 * Q: 如何解决多设备的统一升级问题?
 * A: 采用局域网内的p2p传输实现
 * Q: 基于uboot的设备在刷入镜像翻车时如何处理?
 * A: 没救了,call砖家吧.~~一般来说能搞炸的自己也能修好~~
-* Q: 如何解决客户端访问域名时遭遇的解析问题?
-* A: 遇到dns抢答,这里建议采用Doh缓解,更多请去隔壁代理区详细了解
+
 <br>
 
 
